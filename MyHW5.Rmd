@@ -2,7 +2,9 @@
 title: "HW5"
 author: "Sanduni Talagala"
 date: "March 5, 2020"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -20,6 +22,8 @@ crime<-read.csv("crimedata.csv")
 vriables: ExpenditureYear, StateSize, BelowWage, Education, YouthUnemployment,Youth
 Note: Im not making a training dataset since I have another dataset to test on.
 ```{r}
+library(rpart)
+
 #summary of dataset
 summary(crime)
 
@@ -38,8 +42,9 @@ summary(wholecrime)
 ##4)Plot my tree and describe
 
 Description tree: 
-  The main and most important split is for yearly police expenditure and if it is greater than or less than 77. 51.1% of the data has early police expenditure above 77 and the mean crime rate in that group is 120. Then, of the ones with police expenditure above 77, if there is above 131 youths then the crime rate mean is 133 which inludes 27.7% of the data. Alternatively if there's less than 131 youths then the mean crime rate is 105 which includes 23.4% of the data. 
-  When the police expenditure is less than 77 the most important next factor is the state size (not youth like when expenditure is above 77). The mean crime rate when expenditure is below 77 is 84.5 which includes 48.9% of the data. In that group, if the state size is above 23 hundred thousand, the mean crime rate is 97.6 which includes 23.4% of the data. Alternatively, if the state size is below 23 hundred thousand, the mean crime rate is 72.5 which includes 25.5% of the data.
+The main and most important split is for yearly police expenditure and if it is greater than or less than 77. This shows that 51.1% of the data has early police expenditure above 77 and the mean crime rate in that group is 120. Then, of the ones with police expenditure above 77, if there is above 131 youths then the crime rate mean is 133 which inludes 27.7% of the data. Alternatively if there's less than 131 youths then the mean crime rate is 105 which includes 23.4% of the data. 
+
+When the police expenditure is less than 77 the most important next factor is the state size (not youth like when expenditure is above 77). The mean crime rate when expenditure is below 77 is 84.5 which includes 48.9% of the data. In that group, if the state size is above 23 hundred thousand, the mean crime rate is 97.6 which includes 23.4% of the data. Alternatively, if the state size is below 23 hundred thousand, the mean crime rate is 72.5 which includes 25.5% of the data.
 
 ```{r}
 #install.packages("rpart.plot")
@@ -51,15 +56,20 @@ rpart.plot(wholecrime, digits = 3, fallen.leaves = TRUE,tweak=1.3)
 
 ##5) Mean crime rate for each group
 
-*Police expenditure above 77 - mean crime rate 120
-*Police expenditure below 77 - mean crime rate 84.5
-*State size above 23 (with police expenditure below 77) - mean crime rate is 97.6
-*State size below 23 (with police expenditure below 77) - mean crime rate is 72.5
-*Youth count above 131 (with police expenditure above 77) - mean crime rate is 133
-*Youth count below 131 (with police expenditure above 77) - mean crime rate is 105
+*[Police expenditure above 77 - mean crime rate 120]
+
+*[Police expenditure below 77 - mean crime rate 84.5]
+
+*[State size above 23 (with police expenditure below 77) - mean crime rate is 97.6]
+
+*[State size below 23 (with police expenditure below 77) - mean crime rate is 72.5]
+
+*[Youth count above 131 (with police expenditure above 77) - mean crime rate is 133]
+
+*[Youth count below 131 (with police expenditure above 77) - mean crime rate is 105]
 
 ##6) Were variables excluded? Why?
-This finds the first variable that splits the data into 2 (the best split that give the most homogeneous groups). Then once the data is seperated, this is again done to each seperate group (the 2 groups that were split). This repeats where each subgroup and split until the groups have minimul datapoints (depends on the dataset size) or until no more splits can be made (to make the tree any more homogeneous). They basically make splits until the cp(comlexity parameter) cannot get better any more. In our case, the best split was done using the expenditure of the year. Then depending on the first split, the next split was done based in state size or youth. After this no any more splits would be too small of a cp(not much improvement), so we do not want to add other variables which would make my tree less parsimonious.
+Yes, some predictor variables were excluded. This finds the first variable that splits the data into 2 (the best split that give the most homogeneous groups). Then once the data is seperated, this is again done to each seperate group (the 2 groups that were split). This repeats where each subgroup and split until the groups have minimul datapoints (depends on the dataset size) or until no more splits can be made (to make the tree any more homogeneous). They basically make splits until the cp(comlexity parameter) cannot get better any more (this is when cp is very low). In our case, the best split was done using the expenditure of the year. Then depending on the first split, the next split was done based in state size or youth. After this no any more splits would be too small of a cp(not much improvement), so we do not want to add other variables which would make my tree less parsimonious.
 
 ##7) Predict 10 year crime with ALL the predictor variables available in crime10
 ```{r}
@@ -105,7 +115,7 @@ hist(Myguesses$t)
 ```
 
 ##11) random vs real.
-Random MAE was 44.49198 (this changes every time) and the real MAE was 24.32924. My model did better than random chance it seems. Next question will say if it was significantly better or not.
+Random MAE was 44.49198 (this changes every time) and the real MAE was 24.32924. My model did better than random chance it seems (as our model prediction is very far from the mean in the histogram). Next question will say if it was significantly better or not.
 ```{r}
 Mymean<- mean(Myguesses$t)
 Mymean
